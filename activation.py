@@ -19,7 +19,7 @@ class Relu(Activation):
     
     def partial_sigma(z: np.ndarray, a: np.ndarray):
         """
-        Returns the differential of relu function with respect to the input z
+        Returns the hessian matrix of relu function output with respect to the input z
         """
         assert z.shape[1] == 1
         f = lambda x: 0 if x <= 0 else 1
@@ -37,9 +37,23 @@ class Softmax(Activation):
 
     def partial_sigma(z: np.ndarray, a: np.ndarray):
         """
-        Returns the differential of relu function with respect to the input z
+        Returns the hessian matrix of softmax function output with respect to the input z
         Only for 1 subject, not batch
         """
         pre_hessian = -np.matmul(a, a.T)
         diagonal = np.diagflat(a)
         return np.add(diagonal, pre_hessian)
+    
+class Identity(Activation):
+    def sigma(z: np.ndarray):
+        """
+        Returns the input with the identity function applied to it
+        """
+        assert z.shape[1] == 1
+        return z
+    
+    def partial_sigma(z: np.ndarray, a: np.ndarray):
+        """
+        Returns the hessian matrix of identity function output with respect to the input z
+        """
+        return np.eye(len(z))
