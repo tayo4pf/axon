@@ -20,18 +20,15 @@ class Network:
         labels rows should be the same width as the final layer output
         @output: numpy array of loss values for each subject
         """
-        assert len(data.shape) == 2
-        assert len(labels.shape) == 2
         losses = []
 
         #Iterate through the training data
         for subject, label in zip(data, labels):
-            prop = subject.T
-            label = label.T
-            
+            prop = subject[np.newaxis].T
+            label = label[np.newaxis].T
             #Forward propagate the input
             for layer in self.layers:
-                prop = layer.__forward(prop)
+                prop = layer.forward(prop)
 
             #Calculate loss
             l = self.loss.loss(prop, label)
@@ -42,7 +39,7 @@ class Network:
 
             #Backpropogate differentials through network to update weights
             for layer in reversed(self.layers):
-                de_da = layer.__backward(de_da, self.learning_rate)
+                de_da = layer.backward(de_da, self.learning_rate)
 
         return np.array(losses)
 
@@ -54,19 +51,29 @@ class Network:
         @param labels: 2-d numpy matrix of labels, each label occupies row
         @output: numpy array of loss values for each subject
         """
-        assert len(data.shape) == 2
-        assert len(labels.shape) == 2
         losses = []
 
-        prop = data.T
-        for layer in self.layers:
-            prop = layer.__forward(prop)
+        for input, label in zip(data, labels):
+            prop = input[np.newaxis].T
+            label = label[np.newaxis].T
+            for layer in self.layers:
+                prop = layer.forward(prop)
 
-        prop = prop.T
-        for output, target in zip(prop, labels):
-            output = output.T
-            target = target.T
-            l = self.loss.loss(output, target)
+            l = self.loss.loss(prop, label)
             losses.append(l)
         
-        return losses
+        return np.array(losses)
+    
+    def predict(self, data):
+        """
+        Returns the model prediction of given input data
+        @param data: 2-d numpy matrix of input subjects, each subject occupies a row
+        """
+        preds = []
+        for input in data:
+            prop = input[np.newaxis].T
+            for layer in self.layers:
+                prop = layer.forward(prop)
+            preds.append(prop)
+        
+        return np.array(preds)

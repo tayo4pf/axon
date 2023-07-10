@@ -11,19 +11,13 @@ class Relu(Activation):
         Returns the input with the relu function applied to it
         Only for 1 subject - not for batches
         """
-        assert z.shape[1] == 1
-        f = lambda x: 0 if x < 0 else x
-        a = np.fromiter((f(xi) for xi in z), z.dtype, count = len(z))
-        a = np.reshape(a, z.shape)
-        return a
+        return np.maximum(0, z)
     
     def partial_sigma(z: np.ndarray, a: np.ndarray):
         """
         Returns the hessian matrix of relu function output with respect to the input z
         """
-        assert z.shape[1] == 1
-        f = lambda x: 0 if x <= 0 else 1
-        return np.diagflat(np.fromiter((f(xi) for xi in z), z.dtype, count = len(z)))
+        return np.diagflat(np.where(z > 0, 1, 0))
 
 
 class Softmax(Activation):
@@ -49,7 +43,6 @@ class Identity(Activation):
         """
         Returns the input with the identity function applied to it
         """
-        assert z.shape[1] == 1
         return z
     
     def partial_sigma(z: np.ndarray, a: np.ndarray):
