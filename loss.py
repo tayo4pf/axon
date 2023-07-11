@@ -25,6 +25,9 @@ class MSE(Loss):
         assert output.shape == target.shape
         return -2 * (target - output)
     
+    def name() -> str:
+        return "MSE"
+    
 class Logistic(Loss):
     def loss(output, target):
         """
@@ -39,3 +42,6 @@ class Logistic(Loss):
         """
         assert output.shape == target.shape
         return -(target/output)
+    
+    def name() -> str:
+        return "LOGISTIC"
