@@ -10,6 +10,7 @@ class Layer:
         @
         """
         self.weights = np.random.rand(outputs, inputs).astype(np.float64)
+        self.weights = self.weights / np.sum(self.weights, axis = 1)[np.newaxis].T
         self.shape = (outputs, inputs)
         self.biases = np.random.rand(outputs, 1).astype(np.float64)
         self.activation = activation
