@@ -5,6 +5,18 @@ class Activation:
     def __init__(self):
         pass
 
+    def from_name(name):
+        match name:
+                case "IDENTITY":
+                    return Identity
+                case "RELU":
+                    return Relu
+                case "LEAKYRELU":
+                    return LeakyRelu
+                case "SOFTMAX":
+                    return Softmax
+        raise ModuleNotFoundError("Activation function specified in csv cannot be found:", name)
+
 class Relu(Activation):
     def sigma(z: np.ndarray):
         """

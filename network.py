@@ -55,12 +55,17 @@ class Network:
         """
         losses = []
 
+        #Iterate through dataset
         for input, label in zip(data, labels):
+            #Fix dimensions for input and label
             prop = input[np.newaxis].T
             label = label[np.newaxis].T
+
+            #Forward propagate the input
             for layer in self.layers:
                 prop = layer.forward(prop)
 
+            #Calculate loss
             l = self.loss.loss(prop, label)
             losses.append(l)
         
@@ -122,27 +127,7 @@ class Network:
             writer.writeheader()
             writer.writerows(rows)
 
-    def read_from(self, filename):
-        def str_activation(name):
-            match name:
-                case "IDENTITY":
-                    return activation.Identity
-                case "RELU":
-                    return activation.Relu
-                case "LEAKYRELU":
-                    return activation.LeakyRelu
-                case "SOFTMAX":
-                    return activation.Softmax
-            raise ModuleNotFoundError("Activation function specified in csv cannot be found:", name)
-        
-        def str_loss(name):
-            match name:
-                case "MSE":
-                    return loss.MSE
-                case "LOGISTIC":
-                    return loss.Logistic
-            raise ModuleNotFoundError("Loss function specified in csv cannot be found:", name)
-        
+    def read_from(self, filename):        
         self.shape = []
         self.layers = []
         self.activations = []
@@ -155,8 +140,8 @@ class Network:
 
                 inputs = int(row['inputs'])
                 outputs = int(row['outputs'])
-                a = str_activation(row['activation'])
-                loz = str_loss(row['loss'])
+                a = activation.from_name(row['activation'])
+                loz = loss.from_name(row['loss'])
                 learning_rate = float(row['learning_rate'])
                 weights = np.array(row['weights'][1:-1].replace('\n','').split(), dtype = np.float64)
                 biases = np.array(row['biases'][1:-1].replace('\n','').split(), dtype = np.float64)

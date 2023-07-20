@@ -10,6 +10,14 @@ class Loss:
     def partial_loss(output, target):
         pass
 
+    def from_name(name):
+        match name:
+                case "MSE":
+                    return MSE
+                case "LOGISTIC":
+                    return Logistic
+        raise ModuleNotFoundError("Loss function specified in csv cannot be found:", name)
+
 class MSE(Loss):
     def loss(output, target):
         """
