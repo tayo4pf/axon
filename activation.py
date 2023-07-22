@@ -2,10 +2,7 @@ from typing import Any
 import numpy as np
 
 class Activation:
-    def __init__(self):
-        pass
-
-    def from_name(name, param):
+    def from_name(name):
         match name:
                 case "IDENTITY":
                     return Identity
@@ -56,7 +53,7 @@ class Sigmoid(Activation):
         """
         Returns the inputs with the sigmoid function applied to it
         """
-        return 1/(1 + np.exp(z))
+        return 1/(1 + np.exp(-z))
     
     def partial_sigma(z: np.ndarray, a:np.ndarray):
         """

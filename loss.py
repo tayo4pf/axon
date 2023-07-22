@@ -1,15 +1,6 @@
 import numpy as np
 
 class Loss:
-    def __init__(self):
-        pass
-
-    def loss(output, target):
-        pass
-
-    def partial_loss(output, target):
-        pass
-
     def from_name(name):
         match name:
                 case "MSE":
@@ -23,7 +14,7 @@ class MSE(Loss):
         """
         Returns the loss value of the output and target using mean squared error
         """
-        assert output.shape == target.shape, (output, target)
+        assert output.shape == target.shape
         return np.sum(np.square(output - target))
 
     def partial_loss(output, target):
